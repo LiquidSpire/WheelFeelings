@@ -52,6 +52,10 @@
     }
 
     p.subtitle {
+      position: fixed;
+      bottom: 15px; /* Distance from the bottom of the screen */
+      left: 50%;
+      transform: translateX(-50%); /* Centers the text perfectly */
       margin: 0;
       font-style: italic;
       color: #5c4e3e;
@@ -249,7 +253,7 @@
       position: fixed;
       bottom: 30px;
       left: 50%;
-      transform: translateX(-50%) translateY(100px);
+      transform: translateX(-50%) translateY(125px);
       background: #2b2013;
       color: #f4ecd8;
       padding: 14px 28px;
@@ -265,33 +269,71 @@
     }
 
     @media (max-width: 1024px) {
+      /* Lock mobile scrolling completely */
+      html, body {
+        height: 100%;
+        height: 100dvh;
+      }
+      
       body {
-        padding: 15px 10px; 
+        padding: 15px 10px 5px 10px; 
         background-image: 
           radial-gradient(circle at 15% 25%, rgba(205, 185, 155, 0.4) 0%, transparent 40%),
           radial-gradient(circle at 85% 75%, rgba(215, 195, 165, 0.45) 0%, transparent 50%),
           radial-gradient(circle at 50% 50%, rgba(235, 220, 200, 0.6) 0%, transparent 100%);
       }
-      .app-container {
-        gap: 25px; 
+
+      .header-group {
+        margin-bottom: 5px; /* Save vertical space */
       }
+      
+      .app-container {
+        gap: 15px;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        height: 100%;
+        justify-content: flex-start;
+        overflow: hidden;
+      }
+      
       .selections-area {
         width: 100%;
         padding: 0 10px;
+        min-height: 0; /* allows shrinking */
+        display: flex;
+        flex-direction: column;
       }
+      
+      .selected-list {
+        flex: 1; /* allow flexible spacing */
+        min-height: 60px;
+        max-height: 18vh;
+        margin-bottom: 15px;
+      }
+      
+      /* Put buttons side by side on mobile */
+      .actions {
+        flex-direction: row;
+        gap: 10px;
+      }
+      
+      .actions button {
+        flex: 1; /* Makes buttons share 50/50 width */
+        padding: 12px 10px;
+        font-size: 14px;
+      }
+
       .wheel-container {
         /* Force stops the animation for larger phones and tablets */
         animation: none !important;
         transform: translateY(0) !important;
+        max-height: 50vh; /* restrict height so it fits on screen without scrolling */
+        flex-shrink: 1; 
       }
     }
   </style>
 </head>
 <body>
-
-  <div class="header-group">
-    <h1>Feelings & Sensations Wheel</h1>
-  </div>
 
   <div class="app-container">
     <div class="wheel-container">
@@ -308,8 +350,9 @@
         <button class="btn-secondary" onclick="clearSelections()">Clear Everything</button>
       </div>
     </div>
-    <p class="subtitle">Created by <a href="https://vitosauro.com/">Vito Sauro</a> ©2026 | Inspired by the work of <a href="https://lindsaybraman.com/">Lindsay Braman</a></p>
   </div>
+
+  <p class="subtitle">Created by <a href="https://vitosauro.com/">Vito Sauro</a> ©2026 | Inspired by the work of <a href="https://lindsaybraman.com/">Lindsay Braman</a></p>
 
   <div id="toast" class="toast">Link copied! Share it with a friend.</div>
 
