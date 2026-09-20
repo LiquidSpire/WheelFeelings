@@ -2,20 +2,26 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Feelings & Sensations Wheel</title>
   
   <link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M50 50 L50 0 A50 50 0 0 1 93.3 25 Z' fill='%23d65a5a'/><path d='M50 50 L93.3 25 A50 50 0 0 1 93.3 75 Z' fill='%23a060d4'/><path d='M50 50 L93.3 75 A50 50 0 0 1 50 100 Z' fill='%2343a0d9'/><path d='M50 50 L50 100 A50 50 0 0 1 6.7 75 Z' fill='%234ac96a'/><path d='M50 50 L6.7 75 A50 50 0 0 1 6.7 25 Z' fill='%23d6cd45'/><path d='M50 50 L6.7 25 A50 50 0 0 1 50 0 Z' fill='%23e89643'/><circle cx='50' cy='50' r='15' fill='%233e444b'/></svg>">
-  
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
 
   <style>
+    /* --- Base Styles --- */
     * {
       box-sizing: border-box;
       font-family: 'Jost', sans-serif;
       -webkit-tap-highlight-color: transparent; 
+    }
+
+    html, body {
+      height: 100%;
+      height: 100dvh;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
     }
 
     body {
@@ -25,24 +31,16 @@
         radial-gradient(circle at 85% 75%, rgba(215, 195, 165, 0.45) 0%, transparent 50%),
         radial-gradient(circle at 50% 50%, rgba(235, 220, 200, 0.6) 0%, transparent 100%),
         url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.06'/%3E%3C/svg%3E");
-      
       display: flex;
       flex-direction: column;
       align-items: center;
-      min-height: 100vh;
-      margin: 0;
-      padding: 30px 20px;
       color: #3e3124;
-      overflow-x: hidden; 
+      padding: 2vh 20px;
     }
 
-    .header-group {
-      width: 100%;
-      text-align: center;
-      margin-bottom: 20px;
-      padding: 0 15px; 
-    }
+    a { color: #5b695c; }
 
+    /* --- Typography --- */
     h1 {
       font-weight: 600;
       margin: 0 0 5px 0;
@@ -51,19 +49,31 @@
       font-size: min(7vw, 2.8rem); 
     }
 
-    p.subtitle {
-      margin: 0;
+    .subtitle {
+      flex: 0 0 auto;
+      margin: auto 0 0 0; 
+      padding-top: 15px;
+      padding-bottom: 5px;
       font-style: italic;
       color: #5c4e3e;
       white-space: nowrap;
       font-size: min(3vw, 1.3rem);
+      text-align: center;
     }
 
-    a {color: #5b695c;}
+    /* --- Layout --- */
+    .header-group {
+      flex: 0 0 auto;
+      width: 100%;
+      text-align: center;
+      margin-bottom: 2vh;
+    }
 
     .app-container {
+      flex: 1 1 0;
+      min-height: 0;
       display: flex;
-      flex-wrap: wrap;
+      flex-direction: row;
       gap: 50px;
       justify-content: center;
       align-items: center;
@@ -71,24 +81,29 @@
       width: 100%;
     }
 
+    /* --- Wheel Area --- */
     @keyframes float {
-      0% { transform: translateY(0px) rotate(0deg); }
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
       50% { transform: translateY(-5px) rotate(0.25deg); } 
-      100% { transform: translateY(0px) rotate(0deg); }
     }
 
     .wheel-container {
+      flex: 1 1 0;
+      min-height: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       position: relative;
-      width: 100%;
-      max-width: 650px;
-      height: auto;
-      aspect-ratio: 1;
+      height: 100%;
       animation: float 7s ease-in-out infinite;
     }
 
-    svg {
-      width: 100%;
-      height: 100%;
+    svg#wheel {
+      width: auto;
+      height: auto;
+      max-width: 100%;
+      max-height: 100%;
+      aspect-ratio: 1;
       filter: drop-shadow(0 15px 25px rgba(0,0,0,0.1));
     }
 
@@ -98,10 +113,9 @@
       stroke-width: 1;
       transition: filter 0.25s ease;
     }
-
-    .sector:hover path {
-      filter: brightness(0.9);
-    }
+    
+    .sector:hover path { filter: brightness(0.9); }
+    .sector.selected path { filter: brightness(0.65) saturate(1.2); }
 
     .sector text {
       font-size: 8px;
@@ -113,11 +127,7 @@
       dominant-baseline: middle;
       transition: font-size 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), font-weight 0.2s, fill 0.2s;
     }
-
-    .sector.selected path {
-      filter: brightness(0.65) saturate(1.2);
-    }
-
+    
     .sector.selected text {
       font-size: 9.5px;
       font-weight: 600;
@@ -139,10 +149,10 @@
       letter-spacing: 1px;
     }
 
+    /* --- Selections & UI --- */
     .selections-area {
-      flex: 1;
+      flex: 0 1 420px;
       min-width: 300px;
-      max-width: 420px;
       display: flex;
       flex-direction: column;
     }
@@ -162,7 +172,6 @@
       max-height: 350px;
       overflow-y: auto;
       margin-bottom: 25px;
-      background: transparent;
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
@@ -171,12 +180,15 @@
       scrollbar-color: rgba(139, 115, 85, 0.3) transparent;
     }
 
-    .selected-list::-webkit-scrollbar {
-      width: 6px;
-    }
+    .selected-list::-webkit-scrollbar { width: 6px; }
     .selected-list::-webkit-scrollbar-thumb {
       background: rgba(139, 115, 85, 0.3);
       border-radius: 10px;
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
     }
 
     .pill {
@@ -191,11 +203,6 @@
       border: 1px solid rgba(255,255,255,0.4);
     }
 
-    @keyframes popIn {
-      0% { transform: scale(0.8); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-
     .empty-state {
       font-size: 1.1rem;
       font-style: italic;
@@ -204,6 +211,7 @@
       margin-top: 10px;
     }
 
+    /* --- Buttons & Toasts --- */
     .actions {
       display: flex;
       flex-direction: column;
@@ -220,17 +228,13 @@
       transition: transform 0.1s, background 0.2s, box-shadow 0.2s;
       letter-spacing: 0.5px;
     }
-
-    button:active {
-      transform: scale(0.98);
-    }
+    button:active { transform: scale(0.98); }
 
     .btn-primary {
       background: #5b695c;
       color: #fff;
       box-shadow: 0 6px 15px rgba(91, 105, 92, 0.25);
     }
-
     .btn-primary:hover {
       background: #4a574b;
       box-shadow: 0 8px 20px rgba(91, 105, 92, 0.35);
@@ -240,16 +244,13 @@
       background: rgba(212, 200, 184, 0.4);
       color: #5c4e3e;
     }
-
-    .btn-secondary:hover {
-      background: rgba(212, 200, 184, 0.7);
-    }
+    .btn-secondary:hover { background: rgba(212, 200, 184, 0.7); }
 
     .toast {
       position: fixed;
       bottom: 30px;
       left: 50%;
-      transform: translateX(-50%) translateY(100px);
+      transform: translateX(-50%) translateY(125px);
       background: #2b2013;
       color: #f4ecd8;
       padding: 14px 28px;
@@ -259,39 +260,55 @@
       transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       z-index: 1000;
     }
+    .toast.show { transform: translateX(-50%) translateY(0); }
 
-    .toast.show {
-      transform: translateX(-50%) translateY(0);
-    }
-
+    /* --- Mobile Responsive --- */
     @media (max-width: 1024px) {
-      body {
-        padding: 15px 10px; 
-        background-image: 
-          radial-gradient(circle at 15% 25%, rgba(205, 185, 155, 0.4) 0%, transparent 40%),
-          radial-gradient(circle at 85% 75%, rgba(215, 195, 165, 0.45) 0%, transparent 50%),
-          radial-gradient(circle at 50% 50%, rgba(235, 220, 200, 0.6) 0%, transparent 100%);
-      }
-      .app-container {
-        gap: 25px; 
-      }
-      .selections-area {
+      body { padding: 2vh 10px 1vh 10px; }
+      .app-container { flex-direction: column; gap: 15px; }
+
+      .wheel-container {
         width: 100%;
+        animation: none; 
+        position: relative; 
+      }
+
+      svg#wheel {
+        position: absolute;
+        top: 50%;
+        left: 20%; 
+        transform: translate(-50%, -50%); 
+        height: 90%; 
+        width: auto;
+        max-width: none;
+        max-height: none;
+        flex-shrink: 0;
+        cursor: grab;
+      }
+      svg#wheel:active { cursor: grabbing; }
+
+      .selections-area {
+        flex: 0 0 190px;
+        height: 190px;
+        width: 100%;
+        min-width: 0;
         padding: 0 10px;
       }
-      .wheel-container {
-        /* Force stops the animation for larger phones and tablets */
-        animation: none !important;
-        transform: translateY(0) !important;
+      .selections-area h2 { display: none; }
+      
+      .selected-list {
+        flex: 1 1 0;
+        min-height: 0;
+        max-height: none;
+        margin-bottom: 15px;
       }
+
+      .actions { flex-direction: row; gap: 10px; width: 100%; }
+      .actions button { flex: 1; padding: 12px 10px; font-size: 14px; }
     }
   </style>
 </head>
 <body>
-
-  <div class="header-group">
-    <h1>Feelings & Sensations Wheel</h1>
-  </div>
 
   <div class="app-container">
     <div class="wheel-container">
@@ -299,21 +316,22 @@
     </div>
 
     <div class="selections-area">
+      <h2>My Feelings & Sensations</h2>
       <div id="selectedList" class="selected-list">
         <div class="empty-state">select how you wheely feel...</div>
       </div>
-
       <div class="actions">
         <button class="btn-primary" onclick="copyShareableLink()">Share My Wheel</button>
         <button class="btn-secondary" onclick="clearSelections()">Clear Everything</button>
       </div>
     </div>
-    <p class="subtitle">Created by <a href="https://vitosauro.com/">Vito Sauro</a> ©2026 | Inspired by the work of <a href="https://lindsaybraman.com/">Lindsay Braman</a></p>
   </div>
 
+  <p class="subtitle">Created by <a href="https://vitosauro.com/">Vito Sauro</a> ©2026 | Inspired by the work of <a href="https://lindsaybraman.com/">Lindsay Braman</a></p>
   <div id="toast" class="toast">Link copied! Share it with a friend.</div>
 
   <script>
+    // --- Data Model ---
     const wheelData = [
       {
         id: 'anger', label: 'ANGER', hStart: 355, hEnd: 375, s: 75,
@@ -337,7 +355,7 @@
         ]
       },
       {
-        id: 'sad', label: 'SAD', hStart: 215, hEnd: 190, s: 80,
+        id: 'sad', label: 'SADNESS', hStart: 215, hEnd: 190, s: 80,
         children: [
           { id: '12', label: 'ASHAMED', children: ['HOT EARS', 'SHRINKING INWARD'] },
           { id: '13', label: 'WISTFUL', children: ['TIGHT THROAT', 'DISTANT GAZE'] },
@@ -382,21 +400,33 @@
       }
     ];
 
+    // --- State Variables ---
     const selectedIds = new Set();
     const svg = document.getElementById('wheel');
+    let wheelGroup;
 
     const R0 = 70;   
     const R1 = 135;  
     const R2 = 215;  
     const R3 = 325;  
 
+    let isMobile = window.innerWidth <= 1024;
     let totalOuterSlices = 0;
+    
+    let currentRotation = 0;
+    let rotationAtStart = 0;
+    let startAngle = 0;
+    let isDragging = false;
+    let hasDragged = false;
+
+    // --- Initialization ---
     wheelData.forEach(core => {
       core.children.forEach(sec => totalOuterSlices += sec.children.length);
     });
 
     const anglePerSlice = (2 * Math.PI) / totalOuterSlices;
 
+    // --- SVG Math Utilities ---
     function polarToCartesian(radius, angleInRadians) {
       return {
         x: radius * Math.cos(angleInRadians),
@@ -421,81 +451,96 @@
       ].join(' ');
     }
 
-    let globalAngle = -Math.PI / 2;
-
-    wheelData.forEach(core => {
-      let coreStartAngle = globalAngle;
-      let coreOuterSlices = 0;
-      core.children.forEach(sec => coreOuterSlices += sec.children.length);
+    // --- Rendering ---
+    function drawWheel() {
+      svg.innerHTML = '';
       
-      let coreChildIndex = 0;
+      if (!isMobile) currentRotation = 0;
 
-      core.children.forEach(sec => {
-        let secStartAngle = globalAngle;
-        let secChildCount = sec.children.length;
+      wheelGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+      wheelGroup.setAttribute("id", "wheel-group");
+      wheelGroup.setAttribute('transform', `rotate(${currentRotation})`);
+      svg.appendChild(wheelGroup);
 
-        sec.children.forEach((sensLabel, idx) => {
-          let sensStartAngle = globalAngle;
-          let sensEndAngle = globalAngle + anglePerSlice;
-          let sensId = `${core.id}_${sec.id}_${idx}`;
+      let globalAngle = -Math.PI / 2;
 
-          let ratio = (coreChildIndex + 0.5) / coreOuterSlices;
-          let wedgeHue = core.hStart + (ratio * (core.hEnd - core.hStart)); 
-          let wedgeColor = `hsl(${wedgeHue}, ${core.s}%, 82%)`; 
+      wheelData.forEach(core => {
+        let coreStartAngle = globalAngle;
+        let coreOuterSlices = 0;
+        core.children.forEach(sec => coreOuterSlices += sec.children.length);
+        
+        let coreChildIndex = 0;
 
-          createSector(R2, R3, sensStartAngle, sensEndAngle, wedgeColor, sensId, sensLabel, core.id);
-          
-          globalAngle += anglePerSlice;
-          coreChildIndex++;
+        core.children.forEach(sec => {
+          let secStartAngle = globalAngle;
+          let secChildCount = sec.children.length;
+
+          sec.children.forEach((sensLabel, idx) => {
+            let sensStartAngle = globalAngle;
+            let sensEndAngle = globalAngle + anglePerSlice;
+            let sensId = `${core.id}_${sec.id}_${idx}`;
+
+            let ratio = (coreChildIndex + 0.5) / coreOuterSlices;
+            let wedgeHue = core.hStart + (ratio * (core.hEnd - core.hStart)); 
+            let wedgeColor = `hsl(${wedgeHue}, ${core.s}%, 82%)`; 
+
+            createSector(R2, R3, sensStartAngle, sensEndAngle, wedgeColor, sensId, sensLabel, core.id);
+            
+            globalAngle += anglePerSlice;
+            coreChildIndex++;
+          });
+
+          let secEndAngle = secStartAngle + (secChildCount * anglePerSlice);
+          let ratio = (coreChildIndex - (secChildCount/2)) / coreOuterSlices;
+          let wedgeHue = core.hStart + (ratio * (core.hEnd - core.hStart));
+          let wedgeColor = `hsl(${wedgeHue}, ${core.s}%, 72%)`;
+
+          createSector(R1, R2, secStartAngle, secEndAngle, wedgeColor, sec.id, sec.label, core.id);
         });
 
-        let secEndAngle = secStartAngle + (secChildCount * anglePerSlice);
-        let ratio = (coreChildIndex - (secChildCount/2)) / coreOuterSlices;
-        let wedgeHue = core.hStart + (ratio * (core.hEnd - core.hStart));
-        let wedgeColor = `hsl(${wedgeHue}, ${core.s}%, 72%)`;
-
-        createSector(R1, R2, secStartAngle, secEndAngle, wedgeColor, sec.id, sec.label, core.id);
+        let coreEndAngle = coreStartAngle + (coreOuterSlices * anglePerSlice);
+        let centerHue = (core.hStart + core.hEnd) / 2;
+        let wedgeColor = `hsl(${centerHue}, ${core.s}%, 62%)`; 
+        createSector(R0, R1, coreStartAngle, coreEndAngle, wedgeColor, core.id, core.label, core.id);
       });
 
-      let coreEndAngle = coreStartAngle + (coreOuterSlices * anglePerSlice);
-      let centerHue = (core.hStart + core.hEnd) / 2;
-      let wedgeColor = `hsl(${centerHue}, ${core.s}%, 62%)`; 
-      createSector(R0, R1, coreStartAngle, coreEndAngle, wedgeColor, core.id, core.label, core.id);
-    });
+      const centerCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      centerCircle.setAttribute("cx", 0);
+      centerCircle.setAttribute("cy", 0);
+      centerCircle.setAttribute("r", R0);
+      centerCircle.setAttribute("class", "center-circle");
+      svg.appendChild(centerCircle);
 
-    const centerCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-    centerCircle.setAttribute("cx", 0);
-    centerCircle.setAttribute("cy", 0);
-    centerCircle.setAttribute("r", R0);
-    centerCircle.setAttribute("class", "center-circle");
-    svg.appendChild(centerCircle);
+      const centerText1 = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      centerText1.setAttribute("x", 0);
+      centerText1.setAttribute("y", -8);
+      centerText1.setAttribute("class", "center-text");
+      centerText1.textContent = "FEELINGS &";
+      svg.appendChild(centerText1);
 
-    const centerText1 = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    centerText1.setAttribute("x", 0);
-    centerText1.setAttribute("y", -8);
-    centerText1.setAttribute("class", "center-text");
-    centerText1.textContent = "FEELINGS &";
-    svg.appendChild(centerText1);
-
-    const centerText2 = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    centerText2.setAttribute("x", 0);
-    centerText2.setAttribute("y", 12);
-    centerText2.setAttribute("class", "center-text");
-    centerText2.textContent = "SENSATIONS";
-    svg.appendChild(centerText2);
+      const centerText2 = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      centerText2.setAttribute("x", 0);
+      centerText2.setAttribute("y", 12);
+      centerText2.setAttribute("class", "center-text");
+      centerText2.textContent = "SENSATIONS";
+      svg.appendChild(centerText2);
+    }
 
     function createSector(rIn, rOut, startAngle, endAngle, color, id, label, coreId) {
-      const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
-      g.setAttribute("class", "sector");
-      g.setAttribute("data-id", id);
-      g.setAttribute("data-label", label);
-      g.setAttribute("data-color", color); 
+      const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+      group.setAttribute("class", "sector");
+      group.setAttribute("data-id", id);
+      group.setAttribute("data-label", label);
+      group.setAttribute("data-color", color); 
 
       const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
       path.setAttribute("d", describeArc(rIn, rOut, startAngle, endAngle));
       path.setAttribute("fill", color);
 
-      g.addEventListener('click', () => toggleSelection(id, g));
+      group.addEventListener('click', () => {
+        if (isMobile && hasDragged) return;
+        toggleSelection(id, group);
+      });
 
       const midAngle = (startAngle + endAngle) / 2;
       const midRadius = (rIn + rOut) / 2;
@@ -506,19 +551,24 @@
       text.setAttribute("y", textPos.y);
 
       let angleDeg = midAngle * 180 / Math.PI;
-      
-      if (['joy', 'surprise', 'fear'].includes(coreId)) {
+      if (['joy', 'surprise', 'fear'].includes(coreId) && !isMobile) {
         angleDeg += 180;
       }
       
       text.setAttribute("transform", `rotate(${angleDeg}, ${textPos.x}, ${textPos.y})`);
       text.textContent = label;
 
-      g.appendChild(path);
-      g.appendChild(text);
-      svg.appendChild(g);
+      group.appendChild(path);
+      group.appendChild(text);
+
+      if (selectedIds.has(id)) {
+        group.classList.add('selected');
+      }
+
+      wheelGroup.appendChild(group);
     }
 
+    // --- Interaction & UI Updates ---
     function toggleSelection(id, groupElement) {
       if (selectedIds.has(id)) {
         selectedIds.delete(id);
@@ -536,9 +586,7 @@
       const existingPills = listContainer.querySelectorAll('.pill');
       existingPills.forEach(pill => {
         const id = pill.getAttribute('data-pill-id');
-        if (!selectedIds.has(id)) {
-          pill.remove();
-        }
+        if (!selectedIds.has(id)) pill.remove();
       });
 
       selectedIds.forEach(id => {
@@ -572,6 +620,7 @@
       updateURL();
     }
 
+    // --- URL State Management ---
     function updateURL() {
       const params = new URLSearchParams();
       if (selectedIds.size > 0) {
@@ -597,6 +646,7 @@
       }
     }
 
+    // --- Button Actions ---
     function copyShareableLink() {
       navigator.clipboard.writeText(window.location.href).then(() => {
         const toast = document.getElementById('toast');
@@ -614,6 +664,63 @@
       updateUI();
     }
 
+    // --- Touch & Spin Logic ---
+    function getPointerAngle(clientX, clientY) {
+      const rect = svg.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      return Math.atan2(clientY - centerY, clientX - centerX) * (180 / Math.PI);
+    }
+
+    function onPointerDown(e) {
+      if (!isMobile) return; 
+      if (e.touches && e.touches.length > 1) return; 
+
+      isDragging = true;
+      hasDragged = false;
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      
+      startAngle = getPointerAngle(clientX, clientY);
+      rotationAtStart = currentRotation;
+    }
+
+    function onPointerMove(e) {
+      if (!isDragging || !isMobile) return;
+      e.preventDefault(); 
+
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      const angle = getPointerAngle(clientX, clientY);
+      const angleDiff = angle - startAngle;
+      
+      if (Math.abs(angleDiff) > 2) hasDragged = true;
+
+      currentRotation = rotationAtStart + angleDiff;
+      wheelGroup.setAttribute('transform', `rotate(${currentRotation})`);
+    }
+
+    function onPointerUp() {
+      isDragging = false;
+    }
+
+    svg.addEventListener('mousedown', onPointerDown);
+    svg.addEventListener('touchstart', onPointerDown, {passive: false});
+    window.addEventListener('mousemove', onPointerMove);
+    window.addEventListener('touchmove', onPointerMove, {passive: false});
+    window.addEventListener('mouseup', onPointerUp);
+    window.addEventListener('touchend', onPointerUp);
+
+    window.addEventListener('resize', () => {
+      const newIsMobile = window.innerWidth <= 1024;
+      if (isMobile !== newIsMobile) {
+        isMobile = newIsMobile;
+        drawWheel();
+      }
+    });
+
+    // Boot
+    drawWheel();
     loadFromURL();
   </script>
 </body>
