@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feelings & Sensations Wheel</title>
+  
+  <link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M50 50 L50 0 A50 50 0 0 1 93.3 25 Z' fill='%23d65a5a'/><path d='M50 50 L93.3 25 A50 50 0 0 1 93.3 75 Z' fill='%23a060d4'/><path d='M50 50 L93.3 75 A50 50 0 0 1 50 100 Z' fill='%2343a0d9'/><path d='M50 50 L50 100 A50 50 0 0 1 6.7 75 Z' fill='%234ac96a'/><path d='M50 50 L6.7 75 A50 50 0 0 1 6.7 25 Z' fill='%23d6cd45'/><path d='M50 50 L6.7 25 A50 50 0 0 1 50 0 Z' fill='%23e89643'/><circle cx='50' cy='50' r='15' fill='%233e444b'/></svg>">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Jost', sans-serif;
+      -webkit-tap-highlight-color: transparent; 
+    }
+
+    body {
+      background-color: #f4ecd8;
+      background-image: 
+        radial-gradient(circle at 15% 25%, rgba(205, 185, 155, 0.4) 0%, transparent 40%),
+        radial-gradient(circle at 85% 75%, rgba(215, 195, 165, 0.45) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(235, 220, 200, 0.6) 0%, transparent 100%),
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.06'/%3E%3C/svg%3E");
+      
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 30px 20px;
+      color: #3e3124;
+      overflow-x: hidden; 
+    }
+
+    .header-group {
+      width: 100%;
+      text-align: center;
+      margin-bottom: 20px;
+      padding: 0 15px; 
+    }
+
+    h1 {
+      font-weight: 600;
+      margin: 0 0 5px 0;
+      color: #2b2013;
+      white-space: nowrap;
+      font-size: min(7vw, 2.8rem); 
+    }
+
+    p.subtitle {
+      margin: 0;
+      font-style: italic;
+      color: #5c4e3e;
+      white-space: nowrap;
+      font-size: min(3vw, 1.3rem);
+    }
+
+    a {color: #5b695c;}
+
+    .app-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 50px;
+      justify-content: center;
+      align-items: center;
+      max-width: 1250px;
+      width: 100%;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-5px) rotate(0.25deg); } 
+      100% { transform: translateY(0px) rotate(0deg); }
+    }
+
+    .wheel-container {
+      position: relative;
+      width: 100%;
+      max-width: 650px;
+      height: auto;
+      aspect-ratio: 1;
+      animation: float 7s ease-in-out infinite;
+    }
+
+    svg {
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 15px 25px rgba(0,0,0,0.1));
+    }
+
+    .sector path {
+      cursor: pointer;
+      stroke: rgba(255, 255, 255, 0.4);
+      stroke-width: 1;
+      transition: filter 0.25s ease;
+    }
+
+    .sector:hover path {
+      filter: brightness(0.9);
+    }
+
+    .sector text {
+      font-size: 8px;
+      font-weight: 500;
+      fill: #1f1810;
+      pointer-events: none;
+      user-select: none;
+      text-anchor: middle;
+      dominant-baseline: middle;
+      transition: font-size 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), font-weight 0.2s, fill 0.2s;
+    }
+
+    .sector.selected path {
+      filter: brightness(0.65) saturate(1.2);
+    }
+
+    .sector.selected text {
+      font-size: 9.5px;
+      font-weight: 600;
+      fill: #ffffff;
+    }
+
+    .center-circle {
+      fill: #3e444b;
+      stroke: rgba(255,255,255,0.2);
+      stroke-width: 2;
+    }
+
+    .center-text {
+      fill: #ffffff;
+      font-weight: 600;
+      font-size: 14px;
+      text-anchor: middle;
+      dominant-baseline: middle;
+      letter-spacing: 1px;
+    }
+
+    .selections-area {
+      flex: 1;
+      min-width: 300px;
+      max-width: 420px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .selections-area h2 {
+      margin-top: 0;
+      color: #2b2013;
+      padding-bottom: 10px;
+      font-weight: 600;
+      font-size: 1.6rem;
+      border-bottom: 2px solid rgba(139, 115, 85, 0.2);
+      margin-bottom: 20px;
+    }
+
+    .selected-list {
+      min-height: 150px;
+      max-height: 350px;
+      overflow-y: auto;
+      margin-bottom: 25px;
+      background: transparent;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-content: flex-start;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(139, 115, 85, 0.3) transparent;
+    }
+
+    .selected-list::-webkit-scrollbar {
+      width: 6px;
+    }
+    .selected-list::-webkit-scrollbar-thumb {
+      background: rgba(139, 115, 85, 0.3);
+      border-radius: 10px;
+    }
+
+    .pill {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #1a150f;
+      padding: 8px 18px;
+      border-radius: 30px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+      letter-spacing: 0.5px;
+      animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border: 1px solid rgba(255,255,255,0.4);
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .empty-state {
+      font-size: 1.1rem;
+      font-style: italic;
+      color: #928473;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    button {
+      padding: 14px 20px;
+      font-size: 16px;
+      font-weight: 500;
+      border: none;
+      border-radius: 30px; 
+      cursor: pointer;
+      transition: transform 0.1s, background 0.2s, box-shadow 0.2s;
+      letter-spacing: 0.5px;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    .btn-primary {
+      background: #5b695c;
+      color: #fff;
+      box-shadow: 0 6px 15px rgba(91, 105, 92, 0.25);
+    }
+
+    .btn-primary:hover {
+      background: #4a574b;
+      box-shadow: 0 8px 20px rgba(91, 105, 92, 0.35);
+    }
+
+    .btn-secondary {
+      background: rgba(212, 200, 184, 0.4);
+      color: #5c4e3e;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(212, 200, 184, 0.7);
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #2b2013;
+      color: #f4ecd8;
+      padding: 14px 28px;
+      border-radius: 30px;
+      font-weight: 500;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 1000;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 15px 10px; 
+      }
+      .app-container {
+        gap: 20px; 
+      }
+      .selections-area {
+        width: 100%;
+        padding: 0 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header-group">
+    <h1>Feelings & Sensations Wheel</h1>
+  </div>
+
+  <div class="app-container">
+    <div class="wheel-container">
+      <svg id="wheel" viewBox="-325 -325 650 650"></svg>
+    </div>
+
+    <div class="selections-area">
+      <div id="selectedList" class="selected-list">
+        <div class="empty-state">select how you wheely feel...</div>
+      </div>
+
+      <div class="actions">
+        <button class="btn-primary" onclick="copyShareableLink()">Share My Wheel</button>
+        <button class="btn-secondary" onclick="clearSelections()">Clear Everything</button>
+      </div>
+    </div>
+    <p class="subtitle">Created by <a href="https://vitosauro.com/">Vito Sauro</a> | Inspired by the brilliant work of <a href="https://lindsaybraman.com/">Lindsay Braman</a></p>
+  </div>
+
+  <div id="toast" class="toast">Link copied! Share it with a friend.</div>
+
+  <script>
+    const wheelData = [
+      {
+        id: 'anger', label: 'ANGER', hStart: 355, hEnd: 375, s: 75,
+        children: [
+          { id: '1', label: 'VENOMOUS', children: ['BURNING THROAT', 'COILED TONGUE'] },
+          { id: '2', label: 'SURLY', children: ['BLOOD POUNDING', 'HARD STARE'] },
+          { id: '3', label: 'BITTER', children: ['UPSET STOMACH', 'CROSSED ARMS'] },
+          { id: '4', label: 'INCENDIARY', children: ['HEAT RISING', 'FISTS CLENCHED'] },
+          { id: '5', label: 'DERISIVE', children: ['SHARP EXHALE', 'CURLED LIPS'] },
+          { id: '6', label: 'BETRAYED', children: ['LOST BREATH', 'BURNING SKIN'] }
+        ]
+      },
+      {
+        id: 'disgust', label: 'DISGUST', hStart: 290, hEnd: 260, s: 65,
+        children: [
+          { id: '7', label: 'VIOLATED', children: ['HOLLOW CORE', 'SHUDDERING FRAME'] },
+          { id: '8', label: 'CONTEMPTUOUS', children: ['NASAL BURN', 'TIGHT THROAT'] },
+          { id: '9', label: 'APPALLED', children: ['SHARP INHALATION', 'RECOILING BACK'] },
+          { id: '10', label: 'REPULSED', children: ['SKIN CRAWLING', 'REFLEXIVE GAG'] },
+          { id: '11', label: 'LOATHING', children: ['STOMACH CHURNING', 'FILTHY TASTE'] }
+        ]
+      },
+      {
+        id: 'sad', label: 'SAD', hStart: 215, hEnd: 190, s: 80,
+        children: [
+          { id: '12', label: 'ASHAMED', children: ['HOT EARS', 'SHRINKING INWARD'] },
+          { id: '13', label: 'WISTFUL', children: ['TIGHT THROAT', 'DISTANT GAZE'] },
+          { id: '14', label: 'MELANCHOLY', children: ['QUIET ACHE', 'SLOW SIGH'] },
+          { id: '15', label: 'ALONE', children: ['MURMURED SOBS', 'COLD BONES'] },
+          { id: '16', label: 'WEARY', children: ['HEAVY LIMBS', 'SLOW STEPS'] },
+          { id: '17', label: 'BEREFT', children: ['CAVED TORSO', 'WEEPING FREELY'] }
+        ]
+      },
+      {
+        id: 'joy', label: 'JOY', hStart: 150, hEnd: 110, s: 65,
+        children: [
+          { id: '18', label: 'INQUISITIVE', children: ['LEANING IN', 'BRIGHT EYES'] },
+          { id: '19', label: 'BOLD', children: ['OPEN CHEST', 'STEADY HANDS'] },
+          { id: '20', label: 'PROUD', children: ['LIFTED CHIN', 'SHOULDERS BACK'] },
+          { id: '21', label: 'EUPHORIC', children: ['ELECTRIC WAVES', 'LIGHT-HEADED'] },
+          { id: '22', label: 'ELATED', children: ['EASY BREATHING', 'BUOYANT SPIRIT'] },
+          { id: '23', label: 'TRANQUIL', children: ['CLEAR MIND', 'SOFT MUSCLES'] },
+          { id: '24', label: 'BELONGING', children: ['INTERNAL WARMTH', 'UNGUARDED STANCE'] }
+        ]
+      },
+      {
+        id: 'surprise', label: 'SURPRISE', hStart: 65, hEnd: 45, s: 85,
+        children: [
+          { id: '25', label: 'JOLTED', children: ['HEART SKIPPED', 'TENSED JOINTS'] },
+          { id: '26', label: 'STUNNED', children: ['RIGID BODY', 'RINGING HEAD'] },
+          { id: '27', label: 'SHOCKED', children: ['SLACK JAW', 'WIDE PUPILS'] },
+          { id: '28', label: 'AMBUSHED', children: ['DARTING VISION', 'SWEATY PALMS'] },
+          { id: '29', label: 'BEWILDERED', children: ['SPINNING MOTION', 'PULSING TEMPLES'] }
+        ]
+      },
+      {
+        id: 'fear', label: 'FEAR', hStart: 40, hEnd: 15, s: 85,
+        children: [
+          { id: '30', label: 'VULNERABLE', children: ['EXPOSED CORE', 'EYELIDS SHUT '] },
+          { id: '31', label: 'ANXIOUS', children: ['RESTLESS MOVEMENT', 'FURROWED BROW'] },
+          { id: '32', label: 'TREPIDATIOUS', children: ['SHAKING KNEES', 'SHALLOW BREATH'] },
+          { id: '33', label: 'DREAD', children: ['HAIR RAISED', 'SINKING GUT'] },
+          { id: '34', label: 'HUNTED', children: ['PULSE RACING', 'PRICKLING NECK'] },
+          { id: '35', label: 'PARALYZED', children: ['ROOTED FEET', 'DRY MOUTH'] }
+        ]
+      }
+    ];
+
+    const selectedIds = new Set();
+    const svg = document.getElementById('wheel');
+
+    const R0 = 70;   
+    const R1 = 135;  
+    const R2 = 215;  
+    const R3 = 325;  
+
+    let totalOuterSlices = 0;
+    wheelData.forEach(core => {
+      core.children.forEach(sec => totalOuterSlices += sec.children.length);
+    });
+
+    const anglePerSlice = (2 * Math.PI) / totalOuterSlices;
+
+    function polarToCartesian(radius, angleInRadians) {
+      return {
+        x: radius * Math.cos(angleInRadians),
+        y: radius * Math.sin(angleInRadians)
+      };
+    }
+
+    function describeArc(rInner, rOuter, startAngle, endAngle) {
+      const p1 = polarToCartesian(rInner, startAngle);
+      const p2 = polarToCartesian(rOuter, startAngle);
+      const p3 = polarToCartesian(rOuter, endAngle);
+      const p4 = polarToCartesian(rInner, endAngle);
+      const largeArc = (endAngle - startAngle) > Math.PI ? 1 : 0;
+
+      return [
+        `M ${p1.x} ${p1.y}`,
+        `L ${p2.x} ${p2.y}`,
+        `A ${rOuter} ${rOuter} 0 ${largeArc} 1 ${p3.x} ${p3.y}`,
+        `L ${p4.x} ${p4.y}`,
+        `A ${rInner} ${rInner} 0 ${largeArc} 0 ${p1.x} ${p1.y}`,
+        'Z'
+      ].join(' ');
+    }
+
+    let globalAngle = -Math.PI / 2;
+
+    wheelData.forEach(core => {
+      let coreStartAngle = globalAngle;
+      let coreOuterSlices = 0;
+      core.children.forEach(sec => coreOuterSlices += sec.children.length);
+      
+      let coreChildIndex = 0;
+
+      core.children.forEach(sec => {
+        let secStartAngle = globalAngle;
+        let secChildCount = sec.children.length;
+
+        sec.children.forEach((sensLabel, idx) => {
+          let sensStartAngle = globalAngle;
+          let sensEndAngle = globalAngle + anglePerSlice;
+          let sensId = `${core.id}_${sec.id}_${idx}`;
+
+          let ratio = (coreChildIndex + 0.5) / coreOuterSlices;
+          let wedgeHue = core.hStart + (ratio * (core.hEnd - core.hStart)); 
+          let wedgeColor = `hsl(${wedgeHue}, ${core.s}%, 82%)`; 
+
+          createSector(R2, R3, sensStartAngle, sensEndAngle, wedgeColor, sensId, sensLabel, core.id);
+          
+          globalAngle += anglePerSlice;
+          coreChildIndex++;
+        });
+
+        let secEndAngle = secStartAngle + (secChildCount * anglePerSlice);
+        let ratio = (coreChildIndex - (secChildCount/2)) / coreOuterSlices;
+        let wedgeHue = core.hStart + (ratio * (core.hEnd - core.hStart));
+        let wedgeColor = `hsl(${wedgeHue}, ${core.s}%, 72%)`;
+
+        createSector(R1, R2, secStartAngle, secEndAngle, wedgeColor, sec.id, sec.label, core.id);
+      });
+
+      let coreEndAngle = coreStartAngle + (coreOuterSlices * anglePerSlice);
+      let centerHue = (core.hStart + core.hEnd) / 2;
+      let wedgeColor = `hsl(${centerHue}, ${core.s}%, 62%)`; 
+      createSector(R0, R1, coreStartAngle, coreEndAngle, wedgeColor, core.id, core.label, core.id);
+    });
+
+    const centerCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    centerCircle.setAttribute("cx", 0);
+    centerCircle.setAttribute("cy", 0);
+    centerCircle.setAttribute("r", R0);
+    centerCircle.setAttribute("class", "center-circle");
+    svg.appendChild(centerCircle);
+
+    const centerText1 = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    centerText1.setAttribute("x", 0);
+    centerText1.setAttribute("y", -8);
+    centerText1.setAttribute("class", "center-text");
+    centerText1.textContent = "FEELINGS &";
+    svg.appendChild(centerText1);
+
+    const centerText2 = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    centerText2.setAttribute("x", 0);
+    centerText2.setAttribute("y", 12);
+    centerText2.setAttribute("class", "center-text");
+    centerText2.textContent = "SENSATIONS";
+    svg.appendChild(centerText2);
+
+    function createSector(rIn, rOut, startAngle, endAngle, color, id, label, coreId) {
+      const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+      g.setAttribute("class", "sector");
+      g.setAttribute("data-id", id);
+      g.setAttribute("data-label", label);
+      g.setAttribute("data-color", color); 
+
+      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      path.setAttribute("d", describeArc(rIn, rOut, startAngle, endAngle));
+      path.setAttribute("fill", color);
+
+      g.addEventListener('click', () => toggleSelection(id, g));
+
+      const midAngle = (startAngle + endAngle) / 2;
+      const midRadius = (rIn + rOut) / 2;
+      const textPos = polarToCartesian(midRadius, midAngle);
+      
+      const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      text.setAttribute("x", textPos.x);
+      text.setAttribute("y", textPos.y);
+
+      let angleDeg = midAngle * 180 / Math.PI;
+      
+      if (['joy', 'surprise', 'fear'].includes(coreId)) {
+        angleDeg += 180;
+      }
+      
+      text.setAttribute("transform", `rotate(${angleDeg}, ${textPos.x}, ${textPos.y})`);
+      text.textContent = label;
+
+      g.appendChild(path);
+      g.appendChild(text);
+      svg.appendChild(g);
+    }
+
+    function toggleSelection(id, groupElement) {
+      if (selectedIds.has(id)) {
+        selectedIds.delete(id);
+        groupElement.classList.remove('selected');
+      } else {
+        selectedIds.add(id);
+        groupElement.classList.add('selected');
+      }
+      updateUI();
+    }
+
+    function updateUI() {
+      const listContainer = document.getElementById('selectedList');
+      
+      const existingPills = listContainer.querySelectorAll('.pill');
+      existingPills.forEach(pill => {
+        const id = pill.getAttribute('data-pill-id');
+        if (!selectedIds.has(id)) {
+          pill.remove();
+        }
+      });
+
+      selectedIds.forEach(id => {
+        const existingPill = listContainer.querySelector(`.pill[data-pill-id="${id}"]`);
+        if (!existingPill) {
+          const el = document.querySelector(`g.sector[data-id="${id}"]`);
+          if (el) {
+            const label = el.getAttribute('data-label');
+            const color = el.getAttribute('data-color');
+            
+            const pill = document.createElement('div');
+            pill.className = 'pill';
+            pill.setAttribute('data-pill-id', id);
+            pill.textContent = label;
+            pill.style.backgroundColor = color; 
+
+            listContainer.appendChild(pill);
+          }
+        }
+      });
+
+      const emptyState = listContainer.querySelector('.empty-state');
+      if (selectedIds.size === 0) {
+        if (!emptyState) {
+          listContainer.innerHTML = '<div class="empty-state">select how you wheely feel...</div>';
+        }
+      } else if (emptyState) {
+        emptyState.remove();
+      }
+
+      updateURL();
+    }
+
+    function updateURL() {
+      const params = new URLSearchParams();
+      if (selectedIds.size > 0) {
+        params.set('selected', Array.from(selectedIds).join(','));
+      }
+      const newUrl = `${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}`;
+      window.history.replaceState({}, '', newUrl);
+    }
+
+    function loadFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      const selectedParam = params.get('selected');
+      if (selectedParam) {
+        const ids = selectedParam.split(',');
+        ids.forEach(id => {
+          const el = document.querySelector(`g.sector[data-id="${id}"]`);
+          if (el) {
+            selectedIds.add(id);
+            el.classList.add('selected');
+          }
+        });
+        updateUI(); 
+      }
+    }
+
+    function copyShareableLink() {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        const toast = document.getElementById('toast');
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3500);
+      });
+    }
+
+    function clearSelections() {
+      selectedIds.forEach(id => {
+        const el = document.querySelector(`g.sector[data-id="${id}"]`);
+        if (el) el.classList.remove('selected');
+      });
+      selectedIds.clear();
+      updateUI();
+    }
+
+    loadFromURL();
+  </script>
+</body>
+</html>
