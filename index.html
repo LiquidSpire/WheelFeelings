@@ -264,9 +264,13 @@
       transform: translateX(-50%) translateY(0);
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 1024px) {
       body {
         padding: 15px 10px; 
+        background-image: 
+          radial-gradient(circle at 15% 25%, rgba(205, 185, 155, 0.4) 0%, transparent 40%),
+          radial-gradient(circle at 85% 75%, rgba(215, 195, 165, 0.45) 0%, transparent 50%),
+          radial-gradient(circle at 50% 50%, rgba(235, 220, 200, 0.6) 0%, transparent 100%);
       }
       .app-container {
         gap: 25px; 
@@ -274,6 +278,11 @@
       .selections-area {
         width: 100%;
         padding: 0 10px;
+      }
+      .wheel-container {
+        /* Force stops the animation for larger phones and tablets */
+        animation: none !important;
+        transform: translateY(0) !important;
       }
     }
   </style>
