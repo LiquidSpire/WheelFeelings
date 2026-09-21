@@ -53,9 +53,9 @@
 
     p.subtitle {
       position: fixed;
-      bottom: 15px; /* Distance from the bottom of the screen */
+      bottom: 15px;
       left: 50%;
-      transform: translateX(-50%); /* Centers the text perfectly */
+      transform: translateX(-50%);
       margin: 0;
       font-style: italic;
       color: #5c4e3e;
@@ -269,7 +269,6 @@
     }
 
     @media (max-width: 1024px) {
-      /* Lock mobile scrolling completely */
       html, body {
         height: 100%;
         height: 100dvh;
@@ -284,7 +283,7 @@
       }
 
       .header-group {
-        margin-bottom: 5px; /* Save vertical space */
+        margin-bottom: 5px;
       }
       
       .app-container {
@@ -299,35 +298,33 @@
       .selections-area {
         width: 100%;
         padding: 0 10px;
-        min-height: 0; /* allows shrinking */
+        min-height: 0;
         display: flex;
         flex-direction: column;
       }
       
       .selected-list {
-        flex: 1; /* allow flexible spacing */
+        flex: 1;
         min-height: 60px;
         max-height: 18vh;
         margin-bottom: 15px;
       }
       
-      /* Put buttons side by side on mobile */
       .actions {
         flex-direction: row;
         gap: 10px;
       }
       
       .actions button {
-        flex: 1; /* Makes buttons share 50/50 width */
+        flex: 1;
         padding: 12px 10px;
         font-size: 14px;
       }
 
       .wheel-container {
-        /* Force stops the animation for larger phones and tablets */
         animation: none !important;
         transform: translateY(0) !important;
-        max-height: 50vh; /* restrict height so it fits on screen without scrolling */
+        max-height: 50vh;
         flex-shrink: 1; 
       }
     }
